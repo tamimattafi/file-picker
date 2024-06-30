@@ -1,0 +1,45 @@
+[versions]
+# Android
+android-gradle-plugin = "8.3.2"
+
+# Kotlin
+kotlin = "1.9.24"
+
+# Docs
+dokka = "1.9.10"
+
+# Publishing
+maven-publish = "0.28.0"
+
+[libraries]
+# Plugins
+kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+# Android
+android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
+
+# Publish
+maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
+
+[plugins]
+# Android
+android-application = { id = "com.android.application", version.ref = "android_gradle_plugin" }
+android-library = { id = "com.android.library", version.ref = "android_gradle_plugin" }
+
+# Kotlin Multiplatform
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-js = { id = "org.jetbrains.kotlin.js", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
+
+# Java
+java-gradle-plugin = { id = "java-gradle-plugin" }
+
+# Docs
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+# Publishing
+convention-multiplatform = { id = "com.attafitamim.file.picker.multiplatform" }
+convention-publish = { id = "com.attafitamim.file.picker.publish" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish"}
