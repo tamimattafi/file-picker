@@ -7,18 +7,11 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                api(projects.core.data)
                 api(projects.core.domain)
-                api(projects.utils)
 
                 // Coroutines
-                implementation(libs.kotlin.coroutines.core)
-            }
-        }
-
-        val androidMain by getting {
-            dependencies {
-                // Android
-                implementation(libs.androidx.core.ktx)
+                api(libs.kotlin.coroutines.core)
             }
         }
     }

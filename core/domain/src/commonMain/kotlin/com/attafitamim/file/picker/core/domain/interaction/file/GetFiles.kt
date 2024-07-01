@@ -5,7 +5,7 @@ import com.attafitamim.file.picker.core.domain.model.file.FileFormat
 import com.attafitamim.file.picker.core.domain.model.file.Volume
 import com.attafitamim.file.picker.core.domain.repository.file.IFileRepository
 
-class GetMediaFiles(private val mediaRepository: IFileRepository) {
+class GetFiles(private val mediaRepository: IFileRepository) {
 
     suspend operator fun invoke(
         fullPath: String?,

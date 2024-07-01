@@ -1,25 +1,38 @@
 [versions]
-# Android
-android-gradle-plugin = "8.3.2"
-
 # Kotlin
 kotlin = "1.9.24"
+kotlin_coroutines = "1.8.1"
+kotlinx-io = "0.3.3"
+
+# Android
+android-gradle-plugin = "8.3.2"
+androidx_core_ktx = "1.13.1"
+
+# Ios
+swiftklib = "0.5.1"
 
 # Docs
 dokka = "1.9.10"
 
 # Publishing
 maven-publish = "0.28.0"
+core = "1.13.1"
 
 [libraries]
 # Plugins
 kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
+# Kotlin
+kotlin_coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
+kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+
 # Android
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
+androidx_core_ktx = { module = "androidx.core:core-ktx", version.ref = "androidx_core_ktx" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
+core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 [plugins]
 # Android
@@ -36,6 +49,8 @@ kotlin-native-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", versio
 # Java
 java-gradle-plugin = { id = "java-gradle-plugin" }
 
+# Ios
+swiftklib = { id = "io.github.ttypic.swiftklib", version.ref = "swiftklib" }
 # Docs
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
