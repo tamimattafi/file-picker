@@ -17,4 +17,23 @@ interface IMediaRepository {
         mediaFolder: MediaFolder?,
         expectedSize: Int,
     ): List<MediaElement>
+
+    suspend fun addImage(
+        imageBytes: ByteArray,
+        title: String,
+        currentTime: Long,
+        mimeType: String,
+        description: String?,
+        isDateEnabled: Boolean,
+    ): MediaElement
+
+    suspend fun addMedia(
+        path: String,
+        mimeType: String,
+        title: String,
+        currentTime: Long,
+        description: String?,
+        isDateEnabled: Boolean,
+        isPhoto: Boolean
+    ): MediaElement
 }

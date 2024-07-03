@@ -5,6 +5,8 @@ import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
+import com.attafitamim.file.picker.core.data.local.media.MediaHelper.insertImage
+import com.attafitamim.file.picker.core.data.local.media.MediaHelper.insertMedia
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
@@ -54,6 +56,40 @@ class NewMediaLocalSource(
             expectedSize
         )
     }
+
+    override suspend fun addImage(
+        imageBytes: ByteArray,
+        title: String,
+        currentTime: Long,
+        mimeType: String,
+        description: String?,
+        isDateEnabled: Boolean
+    ): MediaElement = context.insertImage(
+        imageBytes,
+        title,
+        currentTime,
+        mimeType,
+        description,
+        isDateEnabled
+    )
+
+    override suspend fun addMedia(
+        path: String,
+        mimeType: String,
+        title: String,
+        currentTime: Long,
+        description: String?,
+        isDateEnabled: Boolean,
+        isPhoto: Boolean
+    ): MediaElement = context.insertMedia(
+        path,
+        mimeType,
+        title,
+        currentTime,
+        description,
+        isDateEnabled,
+        isPhoto
+    )
 
     private fun getStartSelection(
         includeImages: Boolean,

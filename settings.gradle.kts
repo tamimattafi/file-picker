@@ -21,5 +21,6 @@ dependencyResolutionManagement {
 rootProject.name = "file-picker"
 include(":core:data")
 include(":core:domain")
+include(":core:presentation")
 include(":utils")
 include(":sample:shared")

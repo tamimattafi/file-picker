@@ -7,7 +7,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // Add your dependencies here
+                implementation(projects.utils)
             }
         }
     }

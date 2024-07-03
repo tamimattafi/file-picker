@@ -1,3 +1,5 @@
+@file:OptIn(BetaInteropApi::class)
+
 package com.attafitamim.file.picker.core.data.local
 
 import com.attafitamim.file.picker.core.data.source.media.ILocalSourceMediaRetriever
@@ -6,6 +8,7 @@ import com.attafitamim.file.picker.core.data.source.media.IosMediaElement
 import com.attafitamim.file.picker.core.data.source.media.MediaAsset
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.utils.MIME_TYPE_IMAGE_JPEG
 import com.attafitamim.file.picker.utils.MimeTypeHelper
 import com.attafitamim.file.picker.utils.SECOND_IN_MILLIS
 import com.attafitamim.file.picker.utils.async
@@ -29,6 +32,37 @@ import platform.Photos.PHFetchOptions
 import platform.Photos.PHFetchResult
 import kotlin.coroutines.resume
 import kotlin.math.roundToInt
+import kotlin.random.Random
+import kotlin.random.nextULong
+import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSString
+import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.URLByDeletingLastPathComponent
+import platform.Foundation.create
+import platform.Foundation.dataWithBytes
+import platform.Foundation.dataWithContentsOfURL
+import platform.Foundation.stringByAppendingPathComponent
+import platform.Foundation.writeToFile
+import platform.UIKit.UIImage
+import platform.UIKit.UIImageJPEGRepresentation
+import platform.UIKit.UIImageWriteToSavedPhotosAlbum
+import platform.UIKit.UISaveVideoAtPathToSavedPhotosAlbum
+import platform.posix.memcpy
+
+private const val IMAGES_FOLDER = "/image"
+private const val VIDEOS_FOLDER = "/video"
+private const val IMAGE_PNG_FORMAT = ".png"
+private const val IMAGE_JPEG_FORMAT = ".jpg"
+private const val VIDEO_FORMAT_FORMAT = ".mp4"
+private const val COMPRESSION_QUALITY = 1.0
 
 class IosMediaLocalSource(
     private val mediaRetriever: ILocalSourceMediaRetriever
@@ -79,6 +113,33 @@ class IosMediaLocalSource(
             }
         }
         return urlsAsync.awaitAll().filterNotNull()
+    }
+
+    override suspend fun addImage(
+        imageBytes: ByteArray,
+        title: String,
+        currentTime: Long,
+        mimeType: String,
+        description: String?,
+        isDateEnabled: Boolean
+    ): MediaElement {
+        val imagePath = saveUIImageAndGetPathWithFormat(imageBytes, mimeType)
+        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
+        return MediaElement.ImageElement(imagePath, mimeType, timeInSeconds)
+    }
+
+    override suspend fun addMedia(
+        path: String,
+        mimeType: String,
+        title: String,
+        currentTime: Long,
+        description: String?,
+        isDateEnabled: Boolean,
+        isPhoto: Boolean
+    ): MediaElement {
+        val mediaPath = insertMediaToAlbum(path, isPhoto)
+        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
+        return MediaElement.ImageElement(mediaPath, mimeType, timeInSeconds)
     }
 
     private suspend fun PHAsset.toMediaElement(): MediaElement? =
@@ -193,3 +254,99 @@ class IosMediaLocalSource(
         const val DATE_SORT_KEY = "creationDate"
     }
 }
+
+
+@OptIn(ExperimentalForeignApi::class)
+private fun saveUIImageAndGetPathWithFormat(imageBitmap: ByteArray, mimeType: String): String {
+    val imagePathWithFormat = createMediaPathWithFormat(isPhoto = true, mimeType)
+    val imageData = imageBitmap.usePinned { byte ->
+        NSData.dataWithBytes(byte.addressOf(0), imageBitmap.size.toULong())
+    }
+    UIImage.imageWithData(imageData)?.let { uIImage ->
+        UIImageWriteToSavedPhotosAlbum(uIImage, null, null, null)
+    }
+    return saveImageToCustomPath(imageBitmap, imagePathWithFormat)
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun saveImageToCustomPath(imageData: ByteArray, filePath: String): String {
+    val data = imageData.usePinned { pinned ->
+        NSData.dataWithBytes(pinned.addressOf(0), imageData.size.toULong())
+    }
+
+    val directoryUrl = NSURL.fileURLWithPath(filePath).URLByDeletingLastPathComponent
+    if (!NSFileManager.defaultManager.fileExistsAtPath(directoryUrl?.path.orEmpty()) &&
+        directoryUrl != null
+    ) {
+        NSFileManager.defaultManager.createDirectoryAtURL(
+            directoryUrl, withIntermediateDirectories = true, attributes = null, error = null
+        )
+    }
+
+    data.writeToFile(filePath, atomically = true)
+    return filePath
+}
+
+private fun insertMediaToAlbum(
+    mediaPath: String,
+    isPhoto: Boolean
+): String = if (isPhoto) {
+    insertImageToAlbum(mediaPath)
+} else {
+    insertVideoToAlbum(mediaPath)
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun insertImageToAlbum(path: String): String {
+    var localMediaPath: String? = null
+    val data = NSData.dataWithContentsOfURL(NSURL.fileURLWithPath(path, true))
+    val image = UIImage.imageWithData(requireNotNull(data))
+    UIImageJPEGRepresentation(requireNotNull(image), COMPRESSION_QUALITY)?.let { jpg ->
+        val byteArray = ByteArray(jpg.length.toInt()).apply {
+            usePinned { pinned ->
+                memcpy(pinned.addressOf(0), jpg.bytes, jpg.length)
+            }
+        }
+        localMediaPath = saveUIImageAndGetPathWithFormat(byteArray, MIME_TYPE_IMAGE_JPEG)
+    }
+    return requireNotNull(localMediaPath)
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun insertVideoToAlbum(path: String): String {
+    val videoPath = createMediaPathWithFormat(isPhoto = false)
+    val data = NSData.create(NSURL.fileURLWithPath(path, true))
+    val fileUrl = NSURL.fileURLWithPath(videoPath)
+    val directoryUrl = fileUrl.URLByDeletingLastPathComponent
+    if (!NSFileManager.defaultManager.fileExistsAtPath(directoryUrl?.path.orEmpty()) &&
+        directoryUrl != null
+    ) {
+        NSFileManager.defaultManager.createDirectoryAtURL(
+            directoryUrl, withIntermediateDirectories = true, attributes = null, error = null
+        )
+    }
+    data?.writeToFile(videoPath, atomically = true)
+    UISaveVideoAtPathToSavedPhotosAlbum(path, null, null, null)
+    return videoPath
+}
+
+private fun createMediaPathWithFormat(isPhoto: Boolean, mimeType: String? = null): String {
+    val cacheDir = NSSearchPathForDirectoriesInDomains(
+        NSDocumentDirectory,
+        NSUserDomainMask,
+        true
+    ).first() as NSString
+    return if (isPhoto) {
+        val imageDirectory = cacheDir.stringByAppendingPathComponent(IMAGES_FOLDER)
+        if (mimeType == MIME_TYPE_IMAGE_JPEG) {
+            imageDirectory + randomDirectoryId() + IMAGE_JPEG_FORMAT
+        } else {
+            imageDirectory + randomDirectoryId() + IMAGE_PNG_FORMAT
+        }
+    } else {
+        val videoDirectory = cacheDir.stringByAppendingPathComponent(VIDEOS_FOLDER)
+        videoDirectory + randomDirectoryId() + VIDEO_FORMAT_FORMAT
+    }
+}
+
+private fun randomDirectoryId() = Random.nextULong().toString()

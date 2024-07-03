@@ -3,6 +3,7 @@
 kotlin = "1.9.24"
 kotlin_coroutines = "1.8.1"
 kotlinx-io = "0.3.3"
+kotlin-datetime = "0.6.0"
 
 # Android
 android-gradle-plugin = "8.3.2"
@@ -10,6 +11,10 @@ androidx_core_ktx = "1.13.1"
 
 # Ios
 swiftklib = "0.5.1"
+
+# VM
+orbit = "4.4.0"
+androidx_lifecycle = "2.8.3"
 
 # Docs
 dokka = "1.9.10"
@@ -25,10 +30,16 @@ kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 # Kotlin
 kotlin_coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
 kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 
 # Android
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
 androidx_core_ktx = { module = "androidx.core:core-ktx", version.ref = "androidx_core_ktx" }
+
+# VM
+androidx_lifecycle_view_model = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx_lifecycle" }
+orbit_core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbit" }
+orbit_view_model = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbit" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
