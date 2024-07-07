@@ -8,7 +8,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(projects.core.domain)
-                api(projects.utils)
+                implementation(projects.core.utils)
 
                 // Coroutines
                 implementation(libs.kotlin.coroutines.core)

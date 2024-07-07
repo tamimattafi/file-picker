@@ -12,9 +12,9 @@ import com.attafitamim.file.picker.core.domain.model.file.FileElement
 import com.attafitamim.file.picker.core.domain.model.file.FileElementsResult
 import com.attafitamim.file.picker.core.domain.model.file.FileFormat
 import com.attafitamim.file.picker.core.domain.model.file.Volume
-import com.attafitamim.file.picker.utils.MIME_TYPE_IMAGE
-import com.attafitamim.file.picker.utils.MIME_TYPE_TEXT_PLAIN
-import com.attafitamim.file.picker.utils.isSdk30AndHigher
+import com.attafitamim.file.picker.core.utils.MIME_TYPE_IMAGE
+import com.attafitamim.file.picker.core.utils.MIME_TYPE_TEXT_PLAIN
+import com.attafitamim.file.picker.core.utils.isSdk30AndHigher
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

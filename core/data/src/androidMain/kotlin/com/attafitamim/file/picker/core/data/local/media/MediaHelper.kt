@@ -9,11 +9,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.format.DateUtils
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
-import com.attafitamim.file.picker.utils.SECOND_IN_MILLIS
-import com.attafitamim.file.picker.utils.compressImageToStream
-import com.attafitamim.file.picker.utils.convertMillisToLocalDate
-import com.attafitamim.file.picker.utils.isSdk29AndHigher
-import com.attafitamim.file.picker.utils.tryCreateDirectoryIfNotExists
+import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
+import com.attafitamim.file.picker.core.utils.compressImageToStream
+import com.attafitamim.file.picker.core.utils.convertMillisToLocalDate
+import com.attafitamim.file.picker.core.utils.isSdk29AndHigher
+import com.attafitamim.file.picker.core.utils.tryCreateDirectoryIfNotExists
 import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

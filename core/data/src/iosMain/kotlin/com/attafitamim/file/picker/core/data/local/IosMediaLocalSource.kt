@@ -8,10 +8,10 @@ import com.attafitamim.file.picker.core.data.source.media.IosMediaElement
 import com.attafitamim.file.picker.core.data.source.media.MediaAsset
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
-import com.attafitamim.file.picker.utils.MIME_TYPE_IMAGE_JPEG
-import com.attafitamim.file.picker.utils.MimeTypeHelper
-import com.attafitamim.file.picker.utils.SECOND_IN_MILLIS
-import com.attafitamim.file.picker.utils.async
+import com.attafitamim.file.picker.core.utils.MIME_TYPE_IMAGE_JPEG
+import com.attafitamim.file.picker.core.utils.MimeTypeHelper
+import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
+import com.attafitamim.file.picker.core.utils.async
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
