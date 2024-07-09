@@ -50,6 +50,7 @@ private const val DEFAULT_ROTATION = 90
 actual fun CameraView(
     modifier: Modifier,
     cameraSelector: CameraSelector,
+    torchMode: CameraTorchMode,
     frameFrequency: Long,
     cameraState: CameraState?,
     videoPath: String?,
@@ -67,6 +68,7 @@ actual fun CameraView(
     val imageCapture = remember {
         ImageCapture.Builder().build()
     }
+
     val videoCapture = remember {
         VideoCapture.withOutput(
             Recorder.Builder().setQualitySelector(
@@ -77,12 +79,20 @@ actual fun CameraView(
             ).build()
         )
     }
+
+    LaunchedEffect(torchMode, imageCapture.camera, videoCapture.camera) {
+        val isEnabled = torchMode != CameraTorchMode.OFF
+        imageCapture.camera?.cameraControl?.enableTorch(isEnabled)
+        videoCapture.camera?.cameraControl?.enableTorch(isEnabled)
+    }
+
     val androidCameraSelector = remember(cameraSelector) {
         when (cameraSelector) {
-            CameraSelector.Back -> androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
-            CameraSelector.Front -> androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
+            CameraSelector.BACK -> androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
+            CameraSelector.FRONT -> androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
         }
     }
+
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }

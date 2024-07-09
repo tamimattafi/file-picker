@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
+import androidx.annotation.RestrictTo
 import com.attafitamim.file.picker.core.data.local.media.MediaHelper.insertImage
 import com.attafitamim.file.picker.core.data.local.media.MediaHelper.insertMedia
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource

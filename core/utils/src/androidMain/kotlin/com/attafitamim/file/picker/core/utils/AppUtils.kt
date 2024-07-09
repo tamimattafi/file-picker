@@ -3,7 +3,6 @@ package com.attafitamim.file.picker.core.utils
 import android.app.PendingIntent
 import android.os.Build
 
-// TODO remove 23, 24 checks everywhere
 val isSdk26AndHigher: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 val isSdk29AndHigher: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 val isSdk30AndHigher: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R

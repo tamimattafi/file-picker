@@ -36,6 +36,9 @@ import platform.AVFoundation.AVCaptureDeviceTypeBuiltInUltraWideCamera
 import platform.AVFoundation.AVCaptureDeviceTypeBuiltInWideAngleCamera
 import platform.AVFoundation.AVCaptureFileOutput
 import platform.AVFoundation.AVCaptureFileOutputRecordingDelegateProtocol
+import platform.AVFoundation.AVCaptureFlashModeAuto
+import platform.AVFoundation.AVCaptureFlashModeOff
+import platform.AVFoundation.AVCaptureFlashModeOn
 import platform.AVFoundation.AVCaptureInput
 import platform.AVFoundation.AVCaptureMovieFileOutput
 import platform.AVFoundation.AVCaptureOutput
@@ -45,6 +48,9 @@ import platform.AVFoundation.AVCapturePhotoOutput
 import platform.AVFoundation.AVCapturePhotoSettings
 import platform.AVFoundation.AVCaptureSession
 import platform.AVFoundation.AVCaptureSessionPresetHigh
+import platform.AVFoundation.AVCaptureTorchModeAuto
+import platform.AVFoundation.AVCaptureTorchModeOff
+import platform.AVFoundation.AVCaptureTorchModeOn
 import platform.AVFoundation.AVCaptureVideoDataOutput
 import platform.AVFoundation.AVCaptureVideoDataOutputSampleBufferDelegateProtocol
 import platform.AVFoundation.AVCaptureVideoOrientationLandscapeLeft
@@ -60,7 +66,11 @@ import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.defaultDeviceWithDeviceType
 import platform.AVFoundation.deviceType
 import platform.AVFoundation.fileDataRepresentation
+import platform.AVFoundation.isFlashModeSupported
+import platform.AVFoundation.isTorchModeSupported
 import platform.AVFoundation.position
+import platform.AVFoundation.setFlashMode
+import platform.AVFoundation.setTorchMode
 import platform.CoreGraphics.CGRect
 import platform.CoreImage.CIImage
 import platform.CoreMedia.CMSampleBufferGetImageBuffer
@@ -108,6 +118,7 @@ private val deviceTypes = listOf(
 actual fun CameraView(
     modifier: Modifier,
     cameraSelector: CameraSelector,
+    torchMode: CameraTorchMode,
     frameFrequency: Long,
     cameraState: CameraState?,
     videoPath: String?,
@@ -130,6 +141,7 @@ actual fun CameraView(
         LocalCameraView(
             modifier = modifier,
             cameraSelector = cameraSelector,
+            torchMode = torchMode,
             frameFrequency = frameFrequency,
             cameraState = cameraState,
             videoPath = videoPath,
@@ -147,6 +159,7 @@ actual fun CameraView(
 private fun LocalCameraView(
     modifier: Modifier,
     cameraSelector: CameraSelector,
+    torchMode: CameraTorchMode,
     frameFrequency: Long,
     cameraState: CameraState?,
     videoPath: String?,
@@ -160,16 +173,20 @@ private fun LocalCameraView(
         MutableSharedFlow<ByteArray>(extraBufferCapacity = BUFFER_CAPACITY)
     }
 
-    val camera: AVCaptureDevice? = remember {
+    val iosCameraSelector = remember(cameraSelector) {
+        when (cameraSelector) {
+            CameraSelector.FRONT -> AVCaptureDevicePositionBack
+            CameraSelector.BACK -> AVCaptureDevicePositionFront
+        }
+    }
+
+    val camera: AVCaptureDevice? = remember(iosCameraSelector) {
         AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
             deviceTypes = deviceTypes,
             mediaType = AVMediaTypeVideo,
-            position = when (cameraSelector) {
-                is CameraSelector.Back -> AVCaptureDevicePositionBack
-                is CameraSelector.Front -> AVCaptureDevicePositionFront
-            }
-        )
-    }.devices.firstOrNull() as? AVCaptureDevice
+            position = iosCameraSelector
+        ).devices.firstOrNull() as? AVCaptureDevice
+    }
 
     val capturePhotoOutput = remember { AVCapturePhotoOutput() }
     val captureFrameOutput = remember {
@@ -288,8 +305,8 @@ private fun LocalCameraView(
         }
 
         val position = when (cameraSelector) {
-            CameraSelector.Back -> AVCaptureDevicePositionBack
-            CameraSelector.Front -> AVCaptureDevicePositionFront
+            CameraSelector.BACK -> AVCaptureDevicePositionBack
+            CameraSelector.FRONT -> AVCaptureDevicePositionFront
         }
         val captureDeviceInput = AVCaptureDeviceInput(
             deviceTypes.first { type ->
@@ -413,6 +430,37 @@ private fun LocalCameraView(
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Default) {
             captureSession.startRunning()
+        }
+    }
+
+    LaunchedEffect(torchMode, captureSession.inputs) {
+        captureSession.inputs.forEach { input ->
+            val device = (input as? AVCaptureDeviceInput)?.device?.takeIf { device ->
+                device.deviceType in deviceTypes
+            } ?: return@forEach
+
+            device.lockForConfiguration(null)
+            val iosTorchMode = when (torchMode) {
+                CameraTorchMode.ON -> AVCaptureTorchModeOn
+                CameraTorchMode.OFF -> AVCaptureTorchModeOff
+                CameraTorchMode.AUTO -> AVCaptureTorchModeAuto
+            }
+
+            if (device.isTorchModeSupported(iosTorchMode)) {
+                device.setTorchMode(iosTorchMode)
+            }
+
+            val iosFlashMode = when (torchMode) {
+                CameraTorchMode.ON -> AVCaptureFlashModeOn
+                CameraTorchMode.OFF -> AVCaptureFlashModeOff
+                CameraTorchMode.AUTO -> AVCaptureFlashModeAuto
+            }
+
+            if (device.isFlashModeSupported(iosFlashMode)) {
+                device.setFlashMode(iosFlashMode)
+            }
+
+            device.unlockForConfiguration()
         }
     }
 

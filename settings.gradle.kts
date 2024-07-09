@@ -19,9 +19,11 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "file-picker"
+include(":core")
 include(":core:data")
 include(":core:domain")
 include(":core:utils")
 include(":camera")
+include(":utils")
 
 include(":sample:shared")

@@ -1,18 +1,17 @@
 package com.attafitamim.file.picker.core.data.source.media
 
-sealed interface IosMediaElement {
+sealed interface IosMediaElement
 
-    data class Image(
-        val path: String?,
-        val date: Double?
-    ) : IosMediaElement
+data class IosMediaElementVideo(
+    val path: String?,
+    val date: Double?,
+    val duration: Double
+) : IosMediaElement
 
-    data class Video(
-        val path: String?,
-        val date: Double?,
-        val duration: Double
-    ) : IosMediaElement
-}
+data class IosMediaElementImage(
+    val path: String?,
+    val date: Double?
+) : IosMediaElement
 
 fun interface IMediaElementHandler {
 

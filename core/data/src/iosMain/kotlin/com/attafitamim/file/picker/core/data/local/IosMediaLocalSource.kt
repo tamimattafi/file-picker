@@ -4,7 +4,8 @@ package com.attafitamim.file.picker.core.data.local
 
 import com.attafitamim.file.picker.core.data.source.media.ILocalSourceMediaRetriever
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
-import com.attafitamim.file.picker.core.data.source.media.IosMediaElement
+import com.attafitamim.file.picker.core.data.source.media.IosMediaElementImage
+import com.attafitamim.file.picker.core.data.source.media.IosMediaElementVideo
 import com.attafitamim.file.picker.core.data.source.media.MediaAsset
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
@@ -146,8 +147,8 @@ class IosMediaLocalSource(
         suspendCancellableCoroutine { continuation ->
             mediaRetriever.handleInput(phAsset = MediaAsset(this)) { iosMediaElement ->
                 val element = when (iosMediaElement) {
-                    is IosMediaElement.Image -> iosMediaElement.toImage()
-                    is IosMediaElement.Video -> iosMediaElement.toVideo()
+                    is IosMediaElementImage -> iosMediaElement.toImage()
+                    is IosMediaElementVideo -> iosMediaElement.toVideo()
                     null -> null
                 }
 
@@ -209,7 +210,7 @@ class IosMediaLocalSource(
         }
     }
 
-    private fun IosMediaElement.Image.toImage(): MediaElement.ImageElement? {
+    private fun IosMediaElementImage.toImage(): MediaElement.ImageElement? {
         val path = this.path ?: return null
 
         val mimeType = getMimeType(path)
@@ -227,7 +228,7 @@ class IosMediaLocalSource(
         return MimeTypeHelper.guessMimeTypeFromExtension(extension)
     }
 
-    private fun IosMediaElement.Video.toVideo(): MediaElement.VideoElement? {
+    private fun IosMediaElementVideo.toVideo(): MediaElement.VideoElement? {
         val path = this.path ?: return null
 
         val mimeType = getMimeType(path)

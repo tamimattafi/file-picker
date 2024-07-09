@@ -36,8 +36,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // Libs
-                api(projects.core)
+                implementation(projects.core)
+                implementation(projects.camera)
             }
         }
     }

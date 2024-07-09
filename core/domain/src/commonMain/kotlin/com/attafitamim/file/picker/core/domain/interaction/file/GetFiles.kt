@@ -5,13 +5,13 @@ import com.attafitamim.file.picker.core.domain.model.file.FileFormat
 import com.attafitamim.file.picker.core.domain.model.file.Volume
 import com.attafitamim.file.picker.core.domain.repository.file.IFileRepository
 
-class GetFiles(private val mediaRepository: IFileRepository) {
+class GetFiles(private val fileRepository: IFileRepository) {
 
     suspend operator fun invoke(
         fullPath: String?,
         volume: Volume,
         fileFormats: List<FileFormat>?
-    ): FileElementsResult = mediaRepository.loadFiles(
+    ): FileElementsResult = fileRepository.loadFiles(
         fullPath,
         volume,
         fileFormats

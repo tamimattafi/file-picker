@@ -19,9 +19,6 @@ composeCompilerExtensionVersion = "1.5.14"
 orbit = "4.4.0"
 androidx_lifecycle = "2.8.3"
 
-# Docs
-dokka = "1.9.10"
-
 # Publishing
 maven-publish = "0.28.0"
 core = "1.13.1"
@@ -39,7 +36,6 @@ kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.r
 android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
 androidx_core_ktx = { module = "androidx.core:core-ktx", version.ref = "androidx_core_ktx" }
 androidx_camera_core = { module = "androidx.camera:camera-core", version.ref = "androidx_camera" }
-androidx_camera_camera2 = { module = "androidx.camera:camera-camera2", version.ref = "androidx_camera" }
 androidx_camera_lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx_camera" }
 androidx_camera_view = { module = "androidx.camera:camera-view", version.ref = "androidx_camera" }
 androidx_camera_video = { module = "androidx.camera:camera-video", version.ref = "androidx_camera" }
@@ -71,9 +67,6 @@ java-gradle-plugin = { id = "java-gradle-plugin" }
 
 # Compose
 compose = { id = "org.jetbrains.compose", version.ref = "compose_plugin" }
-
-# Docs
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 # Publishing
 convention-multiplatform = { id = "com.attafitamim.file.picker.multiplatform" }

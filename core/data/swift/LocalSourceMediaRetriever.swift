@@ -9,9 +9,9 @@ import ComposeApp
     Most of the reference are taken from https://github.com/exyte/MediaPicker
 */
 
-class LocalSourceMediaRetriever : ILocalSourceMediaRetriever {
+class LocalSourceMediaRetriever : DataILocalSourceMediaRetriever {
     
-    func handleInput(phAsset: MediaAsset, handler: IMediaElementHandler) {
+    func handleInput(phAsset: DataMediaAsset, handler: DataIMediaElementHandler) {
         Task {
             let element = await phAsset.asset.getIosMediaElement()
             handler.handleElement(element: element)
@@ -41,7 +41,7 @@ extension PHAsset {
         case contentEditing(PHContentEditingInputRequestID)
     }
     
-    func getURLCancellableRequest(completion: @escaping (IosMediaElement?) -> Void) -> Request? {
+    func getURLCancellableRequest(completion: @escaping (DataIosMediaElement?) -> Void) -> Request? {
         var request: Request?
 
         let options = PHContentEditingInputRequestOptions()
@@ -64,7 +64,7 @@ extension PHAsset {
 }
 
 extension PHContentEditingInput {
-    func toMediaElement() -> IosMediaElement? {
+    func toMediaElement() -> DataIosMediaElement? {
         return if (mediaType == .image){
             self.toImage()
         } else {
@@ -72,7 +72,7 @@ extension PHContentEditingInput {
         }
     }
     
-    func toImage() -> IosMediaElementImage {
+    func toImage() -> DataIosMediaElementImage {
         var path = self.fullSizeImageURL?.path
         var dateNative = self.creationDate?.timeIntervalSince1970
         
@@ -82,12 +82,12 @@ extension PHContentEditingInput {
             date = KotlinDouble(value: dateNative!)
         }
         
-        return IosMediaElementImage(path: path, date: date)
+        return DataIosMediaElementImage(path: path, date: date)
     }
 }
 
 extension AVURLAsset {
-    func toVideoElement() -> IosMediaElementVideo {
+    func toVideoElement() -> DataIosMediaElementVideo {
         var path = self.url.path
         var dateNative = self.creationDate?.dateValue?.timeIntervalSince1970
         var duration = CMTimeGetSeconds(self.duration)
@@ -97,12 +97,12 @@ extension AVURLAsset {
             date = KotlinDouble(value: dateNative!)
         }
         
-        return IosMediaElementVideo(path: path, date: date, duration: duration)
+        return DataIosMediaElementVideo(path: path, date: date, duration: duration)
     }
 }
 
 extension PHAsset {
-    func getIosMediaElement() async -> IosMediaElement? {
+    func getIosMediaElement() async -> DataIosMediaElement? {
         let requestStore = RequestStore()
         
         return await withTaskCancellationHandler {

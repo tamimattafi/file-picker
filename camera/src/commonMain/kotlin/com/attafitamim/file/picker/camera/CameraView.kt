@@ -21,7 +21,8 @@ internal const val DEFAULT_FRAME_FREQUENCY = 300L
 @Composable
 expect fun CameraView(
     modifier: Modifier = Modifier,
-    cameraSelector: CameraSelector = CameraSelector.Back,
+    cameraSelector: CameraSelector = CameraSelector.BACK,
+    torchMode: CameraTorchMode = CameraTorchMode.OFF,
     frameFrequency: Long = DEFAULT_FRAME_FREQUENCY,
     cameraState: CameraState? = null,
     videoPath: String? = null,
