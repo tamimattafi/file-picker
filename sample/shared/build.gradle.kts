@@ -34,11 +34,9 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(projects.core)
-                implementation(projects.camera)
-            }
+        commonMain.dependencies {
+            implementation(projects.core)
+            implementation(projects.layout)
         }
     }
 }

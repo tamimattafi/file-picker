@@ -5,10 +5,8 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(projects.core.utils)
-            }
+        commonMain.dependencies {
+            implementation(projects.core.utils)
         }
     }
 }

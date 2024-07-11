@@ -3,15 +3,16 @@ import Photos
 import UniformTypeIdentifiers
 import UIKit.UIImage
 import UIKit.UIScreen
-import ComposeApp
+// Change to your shared framework, for example ComposeApp
+import YOUR_SHARED_FRAMEWORK
 
 /*
     Most of the reference are taken from https://github.com/exyte/MediaPicker
 */
 
-class LocalSourceMediaRetriever : DataILocalSourceMediaRetriever {
-    
-    func handleInput(phAsset: DataMediaAsset, handler: DataIMediaElementHandler) {
+class LocalSourceMediaRetriever : ILocalSourceMediaRetriever {
+
+    func handleInput(phAsset: MediaAsset, handler: IMediaElementHandler) {
         Task {
             let element = await phAsset.asset.getIosMediaElement()
             handler.handleElement(element: element)
@@ -22,11 +23,11 @@ class LocalSourceMediaRetriever : DataILocalSourceMediaRetriever {
 extension PHAsset {
     actor RequestStore {
         var request: Request?
-        
+
         func storeRequest(_ request: Request) {
             self.request = request
         }
-        
+
         func cancel(asset: PHAsset) {
             switch request {
             case .contentEditing(let id):
@@ -36,12 +37,12 @@ extension PHAsset {
             }
         }
     }
-    
+
     enum Request {
         case contentEditing(PHContentEditingInputRequestID)
     }
-    
-    func getURLCancellableRequest(completion: @escaping (DataIosMediaElement?) -> Void) -> Request? {
+
+    func getURLCancellableRequest(completion: @escaping (PlatformMediaElement?) -> Void) -> Request? {
         var request: Request?
 
         let options = PHContentEditingInputRequestOptions()
@@ -53,7 +54,7 @@ extension PHAsset {
             requestContentEditingInput(
                 with: options,
                 completionHandler: { (contentEditingInput, _) in
-                    var mediaElement = contentEditingInput?.toMediaElement()
+                    let mediaElement = contentEditingInput?.toMediaElement()
                     completion(mediaElement)
                 }
             )
@@ -64,47 +65,47 @@ extension PHAsset {
 }
 
 extension PHContentEditingInput {
-    func toMediaElement() -> DataIosMediaElement? {
+    func toMediaElement() -> PlatformMediaElement? {
         return if (mediaType == .image){
             self.toImage()
         } else {
             (self.avAsset as? AVURLAsset)?.toVideoElement()
         }
     }
-    
-    func toImage() -> DataIosMediaElementImage {
-        var path = self.fullSizeImageURL?.path
-        var dateNative = self.creationDate?.timeIntervalSince1970
-        
+
+    func toImage() -> PlatformMediaElementImage {
+        let path = self.fullSizeImageURL?.path
+        let dateNative = self.creationDate?.timeIntervalSince1970
+
         var date: KotlinDouble? = nil
-        
+
         if (dateNative != nil) {
             date = KotlinDouble(value: dateNative!)
         }
-        
-        return DataIosMediaElementImage(path: path, date: date)
+
+        return PlatformMediaElementImage(path: path, date: date)
     }
 }
 
 extension AVURLAsset {
-    func toVideoElement() -> DataIosMediaElementVideo {
-        var path = self.url.path
-        var dateNative = self.creationDate?.dateValue?.timeIntervalSince1970
-        var duration = CMTimeGetSeconds(self.duration)
-        
+    func toVideoElement() -> PlatformMediaElementVideo {
+        let path = self.url.path
+        let dateNative = self.creationDate?.dateValue?.timeIntervalSince1970
+        let duration = CMTimeGetSeconds(self.duration)
+
         var date: KotlinDouble?
         if (dateNative != nil) {
             date = KotlinDouble(value: dateNative!)
         }
-        
-        return DataIosMediaElementVideo(path: path, date: date, duration: duration)
+
+        return PlatformMediaElementVideo(path: path, date: date, duration: duration)
     }
 }
 
 extension PHAsset {
-    func getIosMediaElement() async -> DataIosMediaElement? {
+    func getIosMediaElement() async -> PlatformMediaElement? {
         let requestStore = RequestStore()
-        
+
         return await withTaskCancellationHandler {
             await withCheckedContinuation { continuation in
                 let request = getURLCancellableRequest { url in

@@ -1,11 +1,14 @@
 package com.attafitamim.file.picker.core.utils
 
 const val MIME_TYPE_SEPARATOR = "/"
+const val EXTENSION_SEPARATOR = "."
 
 const val EXTENSION_PLAIN_TEXT = "txt"
 const val EXTENSION_JPEG = "jpg"
 const val EXTENSION_WAV = "wav"
 const val EXTENSION_MP3 = "mp3"
+const val EXTENSION_HEIC = "heic"
+const val EXTENSION_HEIF = "heif"
 
 const val MIME_TYPE_UNKNOWN = "unknown/"
 const val MIME_TYPE_VIDEO = "video/"

@@ -10,7 +10,7 @@ import org.gradle.api.publish.maven.MavenPomScm
 
 class PublishConventions : Plugin<Project> {
 
-  private val version = "0.1.0-local09"
+  private val version = "0.1.0-local19"
   private val group = "com.attafitamim.file.picker"
 
   override fun apply(project: Project) {

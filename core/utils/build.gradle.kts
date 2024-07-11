@@ -5,14 +5,12 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                // Coroutines
-                implementation(libs.kotlin.coroutines.core)
+        commonMain.dependencies {
+            // Coroutines
+            implementation(libs.kotlin.coroutines.core)
 
-                // Date
-                implementation(libs.kotlin.datetime)
-            }
+            // Date
+            implementation(libs.kotlin.datetime)
         }
     }
 }
