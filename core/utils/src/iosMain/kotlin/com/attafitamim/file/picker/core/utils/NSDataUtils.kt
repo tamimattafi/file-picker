@@ -28,22 +28,13 @@ fun NSData.toByteArray(): ByteArray {
     }
 }
 
-fun <R> ByteArray.useNSData(block: (NSData) -> R): R {
-    if (isEmpty()) return block(emptyNSData)
+fun ByteArray.toNSData(): NSData {
+    if (isEmpty()) return emptyNSData
 
-    return usePinned {
-        block(
-            NSData.dataWithBytesNoCopy(
-                bytes = it.addressOf(0),
-                length = size.convert()
-            )
+    return memScoped {
+        NSData.create(
+            bytes = allocArrayOf(this@toNSData),
+            length = this@toNSData.size.toULong()
         )
     }
-}
-
-fun ByteArray.toNSData(): NSData = memScoped {
-    NSData.create(
-        bytes = allocArrayOf(this@toNSData),
-        length = this@toNSData.size.toULong()
-    )
 }

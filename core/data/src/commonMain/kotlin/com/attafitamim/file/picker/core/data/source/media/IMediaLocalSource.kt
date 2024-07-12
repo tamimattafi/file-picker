@@ -25,7 +25,7 @@ interface IMediaLocalSource {
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean,
-    ): MediaElement
+    ): MediaElement.ImageElement
 
     suspend fun addMedia(
         path: String,

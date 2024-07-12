@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.memScoped
 import platform.AVFoundation.AVAssetImageGenerator
 import platform.AVFoundation.AVAssetImageGeneratorApertureModeEncodedPixels
 import platform.AVFoundation.AVURLAsset
@@ -29,30 +28,28 @@ fun imageFromVideo(
     url: String,
     time: Double,
     isUrl: Boolean
-): UIImage? = memScoped {
-    runCatching {
-        val nsUrl = if (isUrl) {
-            NSURL(string = url)
-        } else {
-            NSURL(fileURLWithPath = url, isDirectory = false)
-        }
+): UIImage? = runCatching {
+    val nsUrl = if (isUrl) {
+        NSURL(string = url)
+    } else {
+        NSURL(fileURLWithPath = url, isDirectory = false)
+    }
 
-        val asset = AVURLAsset(nsUrl, null)
-        val assetIG = AVAssetImageGenerator(asset = asset)
-        assetIG.appliesPreferredTrackTransform = true
-        assetIG.apertureMode = AVAssetImageGeneratorApertureModeEncodedPixels
+    val asset = AVURLAsset(nsUrl, null)
+    val assetIG = AVAssetImageGenerator(asset = asset)
+    assetIG.appliesPreferredTrackTransform = true
+    assetIG.apertureMode = AVAssetImageGeneratorApertureModeEncodedPixels
 
-        val cmTime = CMTimeMakeWithSeconds(
-            seconds = time,
-            preferredTimescale = PREFERRED_TIMESCALE
-        )
+    val cmTime = CMTimeMakeWithSeconds(
+        seconds = time,
+        preferredTimescale = PREFERRED_TIMESCALE
+    )
 
-        val thumbnailImageRef = assetIG.copyCGImageAtTime(
-            requestedTime = cmTime,
-            actualTime = null,
-            error = null
-        )
+    val thumbnailImageRef = assetIG.copyCGImageAtTime(
+        requestedTime = cmTime,
+        actualTime = null,
+        error = null
+    )
 
-        return UIImage(thumbnailImageRef)
-    }.getOrNull()
-}
+    return UIImage(thumbnailImageRef)
+}.getOrNull()

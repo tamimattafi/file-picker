@@ -2,6 +2,7 @@ package com.attafitamim.file.picker.core.utils
 
 const val MIME_TYPE_SEPARATOR = "/"
 const val EXTENSION_SEPARATOR = "."
+const val NAME_SEPARATOR = "_"
 
 const val EXTENSION_PLAIN_TEXT = "txt"
 const val EXTENSION_JPEG = "jpg"

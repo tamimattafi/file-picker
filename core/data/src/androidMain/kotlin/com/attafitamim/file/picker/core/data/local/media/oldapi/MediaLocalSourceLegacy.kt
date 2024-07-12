@@ -64,7 +64,7 @@ class MediaLocalSourceLegacy(
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement = context.insertImage(
+    ): MediaElement.ImageElement = context.insertImage(
         imageBytes,
         title,
         currentTime,

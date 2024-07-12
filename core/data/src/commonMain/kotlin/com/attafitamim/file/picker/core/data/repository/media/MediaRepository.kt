@@ -38,7 +38,7 @@ class MediaRepository(
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement = localSource.addImage(
+    ): MediaElement.ImageElement = localSource.addImage(
         imageBytes,
         title,
         currentTime,

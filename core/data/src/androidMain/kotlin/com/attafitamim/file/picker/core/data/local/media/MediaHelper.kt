@@ -33,7 +33,7 @@ object MediaHelper {
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement = withContext(Dispatchers.IO) {
+    ): MediaElement.ImageElement = withContext(Dispatchers.IO) {
         val source = BitmapFactory.decodeByteArray(
             imageBytes,
             0,

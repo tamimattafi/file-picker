@@ -8,3 +8,6 @@ actual fun ByteArray.toImageBitmap(): ImageBitmap? = runCatching {
     val bitmap = BitmapFactory.decodeByteArray(this, 0, this.size)
     bitmap.asImageBitmap()
 }.getOrNull()
+
+actual fun String.pathToImageBitmap(quality: Double): ImageBitmap? =
+    BitmapFactory.decodeFile(this).asImageBitmap()
