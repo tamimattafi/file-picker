@@ -16,7 +16,7 @@ compose_plugin = "1.6.11"
 composeCompilerExtensionVersion = "1.5.14"
 
 # Coil
-coil = "3.0.0-alpha08"
+coil = "3.0.0-alpha09"
 
 # VM
 orbit = "4.4.0"

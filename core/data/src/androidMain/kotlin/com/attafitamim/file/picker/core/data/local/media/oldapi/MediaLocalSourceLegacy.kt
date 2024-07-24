@@ -16,7 +16,8 @@ import kotlinx.coroutines.withContext
  * LocalSource for android sdk up to version 29
  */
 class MediaLocalSourceLegacy(
-    private val context: Context
+    private val context: Context,
+    private val appFolder: String
 ) : IMediaLocalSource {
 
     override suspend fun getFolders(
@@ -70,7 +71,8 @@ class MediaLocalSourceLegacy(
         currentTime,
         mimeType,
         description,
-        isDateEnabled
+        isDateEnabled,
+        appFolder
     )
 
     override suspend fun addMedia(
@@ -88,7 +90,8 @@ class MediaLocalSourceLegacy(
         currentTime,
         description,
         isDateEnabled,
-        isPhoto
+        isPhoto,
+        appFolder
     )
 
     private fun getInitImagesCursor() = getInitCursor(

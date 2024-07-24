@@ -13,7 +13,7 @@ actual fun getDefaultFileLocalSource(
 
 actual fun getDefaultMediaLocalSource(configuration: FilePickerConfiguration): IMediaLocalSource =
     if (isSdk30AndHigher) {
-        MediaLocalSource(configuration.context)
+        MediaLocalSource(configuration.context, configuration.appFolder)
     } else {
-        MediaLocalSourceLegacy(configuration.context)
+        MediaLocalSourceLegacy(configuration.context, configuration.appFolder)
     }

@@ -2,6 +2,7 @@ package com.attafitamim.file.picker.utils
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import coil3.PlatformContext
 import com.attafitamim.file.picker.core.utils.toByteArray
 import com.attafitamim.file.picker.core.utils.toNSData
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -36,5 +37,5 @@ fun String.pathToImage(isDirectory: Boolean = false): UIImage? {
     return UIImage.imageWithContentsOfFile(nsPath)
 }
 
-actual fun String.pathToImageBitmap(quality: Double): ImageBitmap? =
+fun String.pathToImageBitmap(quality: Double = IMAGE_MAX_QUALITY): ImageBitmap? =
     pathToImage()?.toImageBitmap(quality)

@@ -17,5 +17,10 @@ kotlin {
             // Coil
             implementation(libs.coil)
         }
+
+        androidMain.dependencies {
+            // Coil
+            implementation(libs.coil.video)
+        }
     }
 }

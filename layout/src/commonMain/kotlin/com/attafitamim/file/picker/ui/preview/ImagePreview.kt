@@ -11,7 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.size.Precision
-import com.attafitamim.file.picker.utils.FULL_QUALITY
+import com.attafitamim.file.picker.utils.IMAGE_MAX_QUALITY
 import com.attafitamim.file.picker.utils.rememberImageRequestWithHEICSupport
 
 
@@ -20,7 +20,7 @@ fun ImagePreview(
     uri: String,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    quality: Double = FULL_QUALITY,
+    quality: Double = IMAGE_MAX_QUALITY,
     placeholder: Painter = ColorPainter(Color.LightGray),
     error: Painter = ColorPainter(Color.DarkGray),
     preciseResult: Boolean = false,

@@ -2,13 +2,12 @@ package com.attafitamim.file.picker.ui.preview
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import com.attafitamim.file.picker.utils.FULL_QUALITY
+import com.attafitamim.file.picker.utils.IMAGE_MAX_QUALITY
 import com.attafitamim.file.picker.utils.rememberImageFromVideo
 
 private const val DefaultFrame = 0.001
@@ -19,7 +18,7 @@ fun VideoPreview(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     isUrl: Boolean = false,
-    quality: Double = FULL_QUALITY,
+    quality: Double = IMAGE_MAX_QUALITY,
     videoFrameSecond: Double = DefaultFrame,
     contentDescription: String? = null
 ) {

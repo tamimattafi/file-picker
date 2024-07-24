@@ -10,7 +10,6 @@ import android.provider.MediaStore
 import android.text.format.DateUtils
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
-import com.attafitamim.file.picker.core.utils.compressImageToStream
 import com.attafitamim.file.picker.core.utils.convertMillisToLocalDate
 import com.attafitamim.file.picker.core.utils.isSdk29AndHigher
 import com.attafitamim.file.picker.core.utils.tryCreateDirectoryIfNotExists
@@ -21,7 +20,6 @@ import kotlinx.coroutines.withContext
 object MediaHelper {
 
     private const val IMAGE_MIME_TYPE = "image/jpeg"
-    private const val DIRECTORY_NAME = "FilePicker"
     private const val JPEG_FILE_EXTENSION = "jpg"
     private const val IMAGES_SAVING_FORMAT = "dd-MM-yyyy KK_mm_ss a"
     private const val BITMAP_QUALITY = 100
@@ -32,7 +30,8 @@ object MediaHelper {
         currentTime: Long,
         mimeType: String,
         description: String?,
-        isDateEnabled: Boolean
+        isDateEnabled: Boolean,
+        appFolder: String
     ): MediaElement.ImageElement = withContext(Dispatchers.IO) {
         val source = BitmapFactory.decodeByteArray(
             imageBytes,
@@ -46,7 +45,8 @@ object MediaHelper {
             description,
             isDateEnabled,
             mimeType,
-            systemFolder = Environment.DIRECTORY_PICTURES
+            Environment.DIRECTORY_PICTURES,
+            appFolder
         )
 
         val uri = insertImageToGallery(source, values)
@@ -61,7 +61,8 @@ object MediaHelper {
         currentTime: Long,
         description: String?,
         isDateEnabled: Boolean,
-        isPhoto: Boolean
+        isPhoto: Boolean,
+        appFolder: String
     ): MediaElement = withContext(Dispatchers.IO) {
         val systemFolder = if (isPhoto) {
             Environment.DIRECTORY_PICTURES
@@ -75,7 +76,8 @@ object MediaHelper {
             description,
             isDateEnabled,
             mimeType,
-            systemFolder
+            systemFolder,
+            appFolder
         )
 
         val uri = insertFileToGallery(path, values, isPhoto)
@@ -112,7 +114,9 @@ object MediaHelper {
             .let(::requireNotNull)
 
         val outputStream = contentResolver.openOutputStream(uri)
-        compressImageToStream(source, outputStream, BITMAP_QUALITY)
+        outputStream?.use { stream ->
+            source.compress(Bitmap.CompressFormat.JPEG, BITMAP_QUALITY, stream)
+        }
         return uri
     }
 
@@ -122,7 +126,8 @@ object MediaHelper {
         description: String? = null,
         isDateEnabled: Boolean,
         mimeType: String?,
-        systemFolder: String
+        systemFolder: String,
+        appFolder: String
     ): ContentValues {
         val currentTimeFormatted = convertMillisToLocalDate(currentTime, IMAGES_SAVING_FORMAT)
         val correctTitle = if (isDateEnabled) "$title-$currentTimeFormatted" else title
@@ -138,7 +143,7 @@ object MediaHelper {
                 put(MediaStore.Images.Media.DATE_TAKEN, currentTime)
                 put(
                     MediaStore.Images.Media.RELATIVE_PATH,
-                    "$systemFolder/$DIRECTORY_NAME"
+                    "$systemFolder/$appFolder"
                 )
             } else {
                 val picturesDirectory =
@@ -146,7 +151,7 @@ object MediaHelper {
                 val isCreated = tryCreateDirectoryIfNotExists(picturesDirectory)
 
                 if (isCreated) {
-                    val pathToDirectory = "$picturesDirectory/$DIRECTORY_NAME"
+                    val pathToDirectory = "$picturesDirectory/$appFolder"
                     tryCreateDirectoryIfNotExists(pathToDirectory)
                     val extension = mimeType?.getExtensionFromMimeType() ?: JPEG_FILE_EXTENSION
                     put(

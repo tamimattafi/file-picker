@@ -24,7 +24,7 @@ interface IMediaLocalSource {
         currentTime: Long,
         mimeType: String,
         description: String?,
-        isDateEnabled: Boolean,
+        isDateEnabled: Boolean
     ): MediaElement.ImageElement
 
     suspend fun addMedia(
