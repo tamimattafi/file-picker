@@ -2,7 +2,7 @@
 # Kotlin
 kotlin = "1.9.24"
 kotlin_coroutines = "1.8.1"
-kotlinx-io = "0.3.3"
+kotlinx-io = "0.5.2"
 kotlin-datetime = "0.6.0"
 
 # Android
@@ -11,20 +11,13 @@ androidx_core_ktx = "1.13.1"
 androidx_camera = "1.3.4"
 
 # Compose
-compose = "1.6.8"
 compose_plugin = "1.6.11"
-composeCompilerExtensionVersion = "1.5.14"
 
 # Coil
-coil = "3.0.0-alpha09"
-
-# VM
-orbit = "4.4.0"
-androidx_lifecycle = "2.8.3"
+coil = "3.0.0-alpha10"
 
 # Publishing
 maven-publish = "0.28.0"
-core = "1.13.1"
 
 [libraries]
 # Plugins
@@ -44,18 +37,12 @@ androidx_camera_view = { module = "androidx.camera:camera-view", version.ref = "
 androidx_camera_video = { module = "androidx.camera:camera-video", version.ref = "androidx_camera" }
 androidx_camera_extensions = { module = "androidx.camera:camera-extensions", version.ref = "androidx_camera" }
 
-# VM
-androidx_lifecycle_view_model = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx_lifecycle" }
-orbit_core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbit" }
-orbit_view_model = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbit" }
-
 # Coil
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil_video = { module = "io.coil-kt.coil3:coil-video", version.ref = "coil" }
 
 # Publish
 maven-publish-plugin = { module = "com.vanniktech.maven.publish.base:com.vanniktech.maven.publish.base.gradle.plugin", version.ref = "maven-publish" }
-core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 [plugins]
 # Android
