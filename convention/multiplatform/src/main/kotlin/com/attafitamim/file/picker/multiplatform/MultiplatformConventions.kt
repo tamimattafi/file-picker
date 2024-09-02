@@ -30,6 +30,12 @@ class MultiplatformConventions : Plugin<Project> {
       iosX64()
       iosArm64()
       iosSimulatorArm64()
+
+      // TODO: add support for these targets in the future, keep them here for now
+      jvm()
+      js {
+        browser()
+      }
     }
 
     val androidExtension = project.extensions.getByName("android") as LibraryExtension
