@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.database.getStringOrNull
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 
 private const val SEPARATOR = '/'
 private const val DOT = '.'
@@ -47,22 +48,21 @@ fun getMediaElementsForNewApi(
 
         val mediaElement = if (isVideoType) {
             val uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
-                .toString()
-
+            val resource = MediaResource(uri)
             val durationMilliseconds = mediaCursor.getStringOrNull(durationColumnIndex)?.toLong()
 
             MediaElement.VideoElement(
-                uri,
+                resource,
                 mimeType,
                 dateModifiedInSeconds,
                 durationMilliseconds
             )
         } else {
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                .toString()
+            val resource = MediaResource(uri)
 
             MediaElement.ImageElement(
-                uri,
+                resource,
                 mimeType,
                 dateModifiedInSeconds
             )

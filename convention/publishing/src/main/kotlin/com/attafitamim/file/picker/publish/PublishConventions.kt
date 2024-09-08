@@ -10,7 +10,7 @@ import org.gradle.api.publish.maven.MavenPomScm
 
 class PublishConventions : Plugin<Project> {
 
-  private val version = "0.1.0-alpha03"
+  private val version = "0.1.0-alpha04-local04"
   private val group = "com.attafitamim.file.picker"
 
   override fun apply(project: Project) {
@@ -27,7 +27,7 @@ class PublishConventions : Plugin<Project> {
         com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL,
         automaticRelease = true
       )
-      signAllPublications()
+      //signAllPublications()
     }
   }
 }

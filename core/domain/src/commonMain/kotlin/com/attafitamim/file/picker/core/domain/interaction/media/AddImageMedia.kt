@@ -1,7 +1,7 @@
 package com.attafitamim.file.picker.core.domain.interaction.media
 
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
-import com.attafitamim.file.picker.core.domain.model.media.RawMedia
+import com.attafitamim.file.picker.core.domain.model.media.MediaRawData
 import com.attafitamim.file.picker.core.domain.repository.media.IMediaRepository
 import com.attafitamim.file.picker.core.utils.NAME_SEPARATOR
 import com.attafitamim.file.picker.core.utils.currentTimeInMillis
@@ -12,7 +12,7 @@ class AddImageMedia(
 ) {
 
     suspend operator fun invoke(
-        rawMedia: RawMedia,
+        mediaRawData: MediaRawData,
         mimeType: String,
         title: String? = null,
         time: Long? = null,
@@ -22,7 +22,7 @@ class AddImageMedia(
         val actualTime = time ?: currentTimeInMillis()
         val actualTitle = title ?: generateTitle(actualTime)
         return mediaRepository.addImage(
-            rawMedia.bytes,
+            mediaRawData.bytes,
             actualTitle,
             actualTime,
             mimeType,

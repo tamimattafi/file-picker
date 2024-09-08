@@ -9,4 +9,4 @@ actual fun getDefaultFileLocalSource(configuration: FilePickerConfiguration): IF
 }
 
 actual fun getDefaultMediaLocalSource(configuration: FilePickerConfiguration): IMediaLocalSource =
-    MediaLocalSource(configuration.mediaRetriever)
+    MediaLocalSource()

@@ -11,7 +11,6 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.Foundation.create
-import platform.Foundation.dataWithBytesNoCopy
 import platform.Foundation.getBytes
 
 private val emptyArray = ByteArray(0)

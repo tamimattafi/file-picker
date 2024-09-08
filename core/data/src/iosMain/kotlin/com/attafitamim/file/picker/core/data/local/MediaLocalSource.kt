@@ -1,30 +1,22 @@
+@file:OptIn(ExperimentalForeignApi::class)
+
 package com.attafitamim.file.picker.core.data.local
 
-import com.attafitamim.file.picker.core.data.source.media.ILocalSourceMediaRetriever
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
-import com.attafitamim.file.picker.core.data.source.media.MediaAsset
-import com.attafitamim.file.picker.core.data.source.media.element.PlatformMediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 import com.attafitamim.file.picker.core.utils.MIME_TYPE_IMAGE_JPEG
-import com.attafitamim.file.picker.core.utils.MimeTypeHelper
+import com.attafitamim.file.picker.core.utils.MIME_TYPE_VIDEO_MP4
 import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
 import com.attafitamim.file.picker.core.utils.async
+import com.attafitamim.file.picker.core.utils.mimeType
 import com.attafitamim.file.picker.core.utils.toNSData
-import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 import kotlin.random.Random
 import kotlin.random.nextULong
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import platform.Foundation.NSData
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
@@ -36,6 +28,7 @@ import platform.Foundation.NSUserDomainMask
 import platform.Foundation.URLByDeletingLastPathComponent
 import platform.Foundation.create
 import platform.Foundation.stringByAppendingPathComponent
+import platform.Foundation.timeIntervalSince1970
 import platform.Foundation.writeToFile
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetCollection
@@ -58,9 +51,7 @@ private const val IMAGE_JPEG_FORMAT = ".jpg"
 private const val VIDEO_FORMAT_FORMAT = ".mp4"
 private const val COMPRESSION_QUALITY = 1.0
 
-class MediaLocalSource(
-    private val mediaRetriever: ILocalSourceMediaRetriever
-) : IMediaLocalSource {
+class MediaLocalSource : IMediaLocalSource {
 
     override suspend fun getFolders(
         includeImages: Boolean,
@@ -83,7 +74,7 @@ class MediaLocalSource(
         mediaFolder: MediaFolder?,
         expectedSize: Int
     ): List<MediaElement> {
-        val urlsAsync = mutableListOf<Deferred<MediaElement?>>()
+        val urlsAsync = mutableListOf<MediaElement?>()
         val options = PHFetchOptions.new()?.apply {
             this.sortDescriptors = listOf(
                 NSSortDescriptor(DATE_SORT_KEY, ascending = !descendingDirection)
@@ -98,15 +89,12 @@ class MediaLocalSource(
             PHAsset.fetchAssetsWithOptions(options)
         }.toMediaElements(includeImages, includeVideos, expectedSize)
 
-        coroutineScope {
-            withContext(Dispatchers.IO) {
-                assets.forEach { asset ->
-                    val media = async { asset.toMediaElement() }
-                    urlsAsync.add(media)
-                }
-            }
+        assets.forEach { asset ->
+            val media = asset.toMediaElement()
+            urlsAsync.add(media)
         }
-        return urlsAsync.awaitAll().filterNotNull()
+
+        return urlsAsync.filterNotNull()
     }
 
     override suspend fun addImage(
@@ -119,7 +107,8 @@ class MediaLocalSource(
     ): MediaElement.ImageElement {
         val imagePath = saveUIImageAndGetPathWithFormat(imageBytes, mimeType)
         val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        return MediaElement.ImageElement(imagePath, mimeType, timeInSeconds)
+        val resource = MediaResource(MediaResource.Value.Path(imagePath))
+        return MediaElement.ImageElement(resource, mimeType, timeInSeconds)
     }
 
     override suspend fun addMedia(
@@ -133,21 +122,37 @@ class MediaLocalSource(
     ): MediaElement {
         val mediaPath = insertMediaToAlbum(path, isPhoto)
         val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        return MediaElement.ImageElement(mediaPath, mimeType, timeInSeconds)
+        val resource = MediaResource(MediaResource.Value.Path(mediaPath))
+        return MediaElement.ImageElement(resource, mimeType, timeInSeconds)
     }
 
-    private suspend fun PHAsset.toMediaElement(): MediaElement? =
-        suspendCancellableCoroutine { continuation ->
-            mediaRetriever.handleInput(phAsset = MediaAsset(this)) { iosMediaElement ->
-                val element = when (iosMediaElement) {
-                    is PlatformMediaElement.Image -> iosMediaElement.toImage()
-                    is PlatformMediaElement.Video -> iosMediaElement.toVideo()
-                    null -> null
-                }
+    private fun PHAsset.toMediaElement(): MediaElement? = when (mediaType) {
+        PHAssetMediaTypeImage -> toImageElement()
+        PHAssetMediaTypeVideo -> toVideoElement()
+        else -> null
+    }
 
-                continuation.resume(element)
-            }
-        }
+    private fun PHAsset.toImageElement(): MediaElement.ImageElement {
+        val value = MediaResource(value = MediaResource.Value.Asset(asset = this))
+        val date = modificationDate?.timeIntervalSince1970?.roundToInt() ?: 0
+        return MediaElement.ImageElement(
+            value,
+            mimeType,
+            date
+        )
+    }
+
+    private fun PHAsset.toVideoElement(): MediaElement.VideoElement {
+        val resource = MediaResource(value = MediaResource.Value.Asset(asset = this))
+        val date = modificationDate?.timeIntervalSince1970?.roundToInt() ?: 0
+        val durationInMillis = duration.toLong() * SECOND_IN_MILLIS
+        return MediaElement.VideoElement(
+            resource,
+            mimeType,
+            date,
+            durationInMillis
+        )
+    }
 
     private suspend fun getMediaCollections(
         includeImages: Boolean,
@@ -201,39 +206,6 @@ class MediaLocalSource(
         phAsset?.takeIf { asset ->
             asset.isImage(includeImages) || asset.isVideo(includeVideos)
         }
-    }
-
-    private fun PlatformMediaElement.Image.toImage(): MediaElement.ImageElement? {
-        val path = this.path ?: return null
-
-        val mimeType = getMimeType(path)
-        val dateInSeconds = date?.roundToInt() ?: 0
-
-        return MediaElement.ImageElement(
-            path,
-            mimeType.orEmpty(),
-            dateInSeconds
-        )
-    }
-
-    private fun getMimeType(path: String): String? {
-        val extension = path.takeLastWhile { it != '.' }
-        return MimeTypeHelper.guessMimeTypeFromExtension(extension)
-    }
-
-    private fun PlatformMediaElement.Video.toVideo(): MediaElement.VideoElement? {
-        val path = this.path ?: return null
-
-        val mimeType = getMimeType(path)
-        val dateInSeconds = date?.roundToInt() ?: 0
-        val duration = duration.toLong() * SECOND_IN_MILLIS
-
-        return MediaElement.VideoElement(
-            path,
-            mimeType.orEmpty(),
-            dateInSeconds,
-            duration
-        )
     }
 
     // TODO optimize media types filter on fetching data from os

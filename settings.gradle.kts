@@ -24,6 +24,5 @@ include(":core:data")
 include(":core:domain")
 include(":core:utils")
 include(":layout")
-include(":helpers")
 
 include(":sample:shared")

@@ -7,6 +7,7 @@ import android.media.MediaMetadataRetriever
 import android.provider.MediaStore
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 
 private const val SEPARATOR = '/'
 private const val DOT = '.'
@@ -87,10 +88,10 @@ fun getMediaElementsForOldApi(
             val id = imagesCursor.getString(imagesIdColumnIndex).toLong()
             val mimeType = imagesCursor.getString(imagesMimeColumnIndex)
             val uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                .toString()
+            val resource = MediaResource(uri)
 
             MediaElement.ImageElement(
-                uri,
+                resource,
                 mimeType,
                 imagesDate
             ).let(mediaElements::add)
@@ -108,6 +109,7 @@ fun getMediaElementsForOldApi(
             val id = videosCursor.getString(videosIdColumnIndex).toLong()
             val mimeType = videosCursor.getString(videosMimeColumnIndex)
             val uri = ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, id)
+            val resource = MediaResource(uri)
 
             try {
                 context.contentResolver.openAssetFileDescriptor(
@@ -126,7 +128,7 @@ fun getMediaElementsForOldApi(
             )?.toLong()
 
             MediaElement.VideoElement(
-                uri.toString(),
+                resource,
                 mimeType,
                 videosDate,
                 durationInMillis

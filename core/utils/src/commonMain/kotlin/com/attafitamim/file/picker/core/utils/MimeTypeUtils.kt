@@ -64,3 +64,14 @@ fun isVideo(mimeType: String): Boolean {
 fun isAudio(mimeType: String): Boolean {
     return mimeType.startsWith(MIME_TYPE_AUDIO)
 }
+
+fun String.isHEICUri(): Boolean {
+    val extension = substringAfterLast(EXTENSION_SEPARATOR)
+    return extension.equals(EXTENSION_HEIC, ignoreCase = true) ||
+            equals(EXTENSION_HEIF, ignoreCase = true)
+}
+
+fun getMimeType(path: String): String? {
+    val extension = path.substringAfterLast(".")
+    return MimeTypeHelper.guessMimeTypeFromExtension(extension)
+}

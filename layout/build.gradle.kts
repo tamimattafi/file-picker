@@ -8,15 +8,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.utils)
-            implementation(projects.helpers)
 
             // Compose
             implementation(compose.ui)
             implementation(compose.runtime)
             implementation(compose.foundation)
-
-            // Coil
-            implementation(libs.coil)
         }
 
         androidMain.dependencies {
