@@ -7,9 +7,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 
 @Composable
-actual fun MediaState.asBitmapState(
+actual fun MediaState.asThumbnailBitmapState(
     contentScale: ContentScale,
-    size: IntSize?
+    size: IntSize?,
+    quality: Double
 ): State<ImageBitmap?> {
     TODO("Not yet implemented")
 }

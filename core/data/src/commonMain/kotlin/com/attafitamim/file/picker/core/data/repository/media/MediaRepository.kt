@@ -3,6 +3,7 @@ package com.attafitamim.file.picker.core.data.repository.media
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import com.attafitamim.file.picker.core.domain.repository.media.IMediaRepository
 
 class MediaRepository(
@@ -38,7 +39,7 @@ class MediaRepository(
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement.ImageElement = localSource.addImage(
+    ): MediaLocation = localSource.addImage(
         imageBytes,
         title,
         currentTime,
@@ -55,7 +56,7 @@ class MediaRepository(
         description: String?,
         isDateEnabled: Boolean,
         isPhoto: Boolean
-    ): MediaElement = localSource.addMedia(
+    ): MediaLocation = localSource.addMedia(
         path,
         mimeType,
         title,

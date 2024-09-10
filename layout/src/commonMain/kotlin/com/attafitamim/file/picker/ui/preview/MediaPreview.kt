@@ -15,28 +15,33 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 
+const val DefaultThumbnailQuality = 1.0
+
 @Composable
-expect fun MediaState.asBitmapState(
+expect fun MediaState.asThumbnailBitmapState(
     contentScale: ContentScale,
-    size: IntSize?
+    size: IntSize?,
+    quality: Double
 ): State<ImageBitmap?>
 
 @Composable
-fun MediaPreview(
+fun MediaThumbnail(
     modifier: Modifier = Modifier,
     state: MediaState,
     contentScale: ContentScale = ContentScale.Fit,
+    quality: Double = DefaultThumbnailQuality,
     contentDescription: String? = null,
+
 ) {
-    var size: IntSize? by remember {
+    var thumbnailSize: IntSize? by remember {
         mutableStateOf(null)
     }
 
-    val bitmap by state.asBitmapState(contentScale, size)
+    val bitmap by state.asThumbnailBitmapState(contentScale, thumbnailSize, quality)
     Box(
         modifier = modifier.onSizeChanged { newSize ->
             if (newSize.width != 0 && newSize.height != 0) {
-                size = newSize
+                thumbnailSize = newSize
             }
         }
     ) {

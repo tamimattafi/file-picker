@@ -2,7 +2,6 @@
 # Kotlin
 kotlin = "1.9.24"
 kotlin_coroutines = "1.8.1"
-kotlinx-io = "0.5.2"
 kotlin-datetime = "0.6.0"
 
 # Android
@@ -22,7 +21,6 @@ kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 
 # Kotlin
 kotlin_coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin_coroutines" }
-kotlinx-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io" }
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 
 # Android

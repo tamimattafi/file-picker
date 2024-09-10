@@ -9,6 +9,7 @@ import com.attafitamim.file.picker.core.data.local.media.MediaHelper.insertMedia
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -65,7 +66,7 @@ class MediaLocalSourceLegacy(
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement.ImageElement = context.insertImage(
+    ): MediaLocation = context.insertImage(
         imageBytes,
         title,
         currentTime,
@@ -83,7 +84,7 @@ class MediaLocalSourceLegacy(
         description: String?,
         isDateEnabled: Boolean,
         isPhoto: Boolean
-    ): MediaElement = context.insertMedia(
+    ): MediaLocation = context.insertMedia(
         path,
         mimeType,
         title,

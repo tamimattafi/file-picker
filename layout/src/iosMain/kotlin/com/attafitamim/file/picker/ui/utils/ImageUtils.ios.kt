@@ -45,19 +45,3 @@ fun String.pathToImage(isDirectory: Boolean = false): UIImage? {
 
 fun String.pathToImageBitmap(quality: Double = IMAGE_MAX_QUALITY): ImageBitmap? =
     pathToImage()?.toImageBitmap(quality)
-
-@Composable
-fun PHAsset.getThumbnailAsState(
-    contentMode: PHImageContentMode,
-    size: IntSize?
-): State<ImageBitmap?> = produceState<ImageBitmap?>(
-    initialValue = null,
-    this,
-    contentMode,
-    size
-) {
-    size?.run {
-        value = getThumbnail(width.toDouble(), height.toDouble(), contentMode)
-            ?.toImageBitmap(IMAGE_MAX_QUALITY)
-    }
-}

@@ -2,16 +2,16 @@ package com.attafitamim.file.picker.core.domain.model.media
 
 import platform.Photos.PHAsset
 
-actual class MediaResource(
+actual data class MediaResource(
     val value: Value
 ) {
 
     sealed interface Value {
-        class Asset(
+        data class Asset(
             val asset: PHAsset
         ) : Value
 
-        class Path(
+        data class Path(
             val uri: String
         ) : Value
     }

@@ -5,6 +5,7 @@ package com.attafitamim.file.picker.core.data.local
 import com.attafitamim.file.picker.core.data.source.media.IMediaLocalSource
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 import com.attafitamim.file.picker.core.utils.MIME_TYPE_IMAGE_JPEG
 import com.attafitamim.file.picker.core.utils.MIME_TYPE_VIDEO_MP4
@@ -104,11 +105,9 @@ class MediaLocalSource : IMediaLocalSource {
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement.ImageElement {
+    ): MediaLocation {
         val imagePath = saveUIImageAndGetPathWithFormat(imageBytes, mimeType)
-        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        val resource = MediaResource(MediaResource.Value.Path(imagePath))
-        return MediaElement.ImageElement(resource, mimeType, timeInSeconds)
+        return MediaLocation(imagePath, mimeType)
     }
 
     override suspend fun addMedia(
@@ -119,11 +118,9 @@ class MediaLocalSource : IMediaLocalSource {
         description: String?,
         isDateEnabled: Boolean,
         isPhoto: Boolean
-    ): MediaElement {
+    ): MediaLocation {
         val mediaPath = insertMediaToAlbum(path, isPhoto)
-        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        val resource = MediaResource(MediaResource.Value.Path(mediaPath))
-        return MediaElement.ImageElement(resource, mimeType, timeInSeconds)
+        return MediaLocation(mediaPath, mimeType)
     }
 
     private fun PHAsset.toMediaElement(): MediaElement? = when (mediaType) {

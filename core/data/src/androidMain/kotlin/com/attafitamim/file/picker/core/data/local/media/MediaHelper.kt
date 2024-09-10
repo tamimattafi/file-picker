@@ -9,6 +9,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.format.DateUtils
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
+import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
 import com.attafitamim.file.picker.core.utils.convertMillisToLocalDate
@@ -33,7 +34,7 @@ object MediaHelper {
         description: String?,
         isDateEnabled: Boolean,
         appFolder: String
-    ): MediaElement.ImageElement = withContext(Dispatchers.IO) {
+    ): MediaLocation = withContext(Dispatchers.IO) {
         val source = BitmapFactory.decodeByteArray(
             imageBytes,
             0,
@@ -51,9 +52,7 @@ object MediaHelper {
         )
 
         val uri = insertImageToGallery(source, values)
-        val resource = MediaResource(uri)
-        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        MediaElement.ImageElement(resource, mimeType, timeInSeconds)
+        MediaLocation(uri.toString(), mimeType)
     }
 
     suspend fun Context.insertMedia(
@@ -65,7 +64,7 @@ object MediaHelper {
         isDateEnabled: Boolean,
         isPhoto: Boolean,
         appFolder: String
-    ): MediaElement = withContext(Dispatchers.IO) {
+    ): MediaLocation = withContext(Dispatchers.IO) {
         val systemFolder = if (isPhoto) {
             Environment.DIRECTORY_PICTURES
         } else {
@@ -83,9 +82,7 @@ object MediaHelper {
         )
 
         val uri = insertFileToGallery(path, values, isPhoto)
-        val resource = MediaResource(uri)
-        val timeInSeconds = (currentTime / SECOND_IN_MILLIS).toInt()
-        MediaElement.ImageElement(resource, mimeType, timeInSeconds)
+        MediaLocation(uri.toString(), mimeType)
     }
 
     private fun Context.insertFileToGallery(

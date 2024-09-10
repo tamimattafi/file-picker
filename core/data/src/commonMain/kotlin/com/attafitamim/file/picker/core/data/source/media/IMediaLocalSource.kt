@@ -2,6 +2,7 @@ package com.attafitamim.file.picker.core.data.source.media
 
 import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
+import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 
 interface IMediaLocalSource {
 
@@ -25,7 +26,7 @@ interface IMediaLocalSource {
         mimeType: String,
         description: String?,
         isDateEnabled: Boolean
-    ): MediaElement.ImageElement
+    ): MediaLocation
 
     suspend fun addMedia(
         path: String,
@@ -35,5 +36,5 @@ interface IMediaLocalSource {
         description: String?,
         isDateEnabled: Boolean,
         isPhoto: Boolean
-    ): MediaElement
+    ): MediaLocation
 }
