@@ -3,17 +3,16 @@ package com.attafitamim.file.picker.ui.preview
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import com.attafitamim.file.picker.core.utils.getThumbnail
 import com.attafitamim.file.picker.core.utils.thumbnailFromImageUrl
 import com.attafitamim.file.picker.core.utils.thumbnailFromVideoUrl
-import com.attafitamim.file.picker.ui.preview.MediaType.*
+import com.attafitamim.file.picker.ui.preview.MediaType.IMAGE
+import com.attafitamim.file.picker.ui.preview.MediaType.VIDEO
 import com.attafitamim.file.picker.ui.utils.IMAGE_MAX_QUALITY
 import com.attafitamim.file.picker.ui.utils.toImageBitmap
-import kotlin.math.roundToInt
 import platform.Photos.PHImageContentModeAspectFill
 import platform.Photos.PHImageContentModeAspectFit
 import platform.Photos.PHImageContentModeDefault
@@ -64,6 +63,7 @@ private suspend fun MediaStateResource.Value.Asset.getThumbnail(
         ContentScale.FillBounds,
         ContentScale.FillWidth,
         ContentScale.FillHeight -> PHImageContentModeAspectFill
+
         else -> PHImageContentModeDefault
     }
 

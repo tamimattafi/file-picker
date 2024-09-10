@@ -24,7 +24,7 @@ kotlin_coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-co
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
 
 # Android
-android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin"}
+android-build-tools = { module = "com.android.tools.build:gradle", version.ref = "android-gradle-plugin" }
 androidx_core_ktx = { module = "androidx.core:core-ktx", version.ref = "androidx_core_ktx" }
 androidx_camera_core = { module = "androidx.camera:camera-core", version.ref = "androidx_camera" }
 androidx_camera_lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "androidx_camera" }
@@ -56,4 +56,4 @@ compose = { id = "org.jetbrains.compose", version.ref = "compose_plugin" }
 # Publishing
 convention-multiplatform = { id = "com.attafitamim.file.picker.multiplatform" }
 convention-publish = { id = "com.attafitamim.file.picker.publish" }
-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish"}
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

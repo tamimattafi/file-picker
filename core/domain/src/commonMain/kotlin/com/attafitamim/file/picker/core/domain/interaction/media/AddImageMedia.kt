@@ -1,6 +1,5 @@
 package com.attafitamim.file.picker.core.domain.interaction.media
 
-import com.attafitamim.file.picker.core.domain.model.media.MediaElement
 import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import com.attafitamim.file.picker.core.domain.model.media.MediaRawData
 import com.attafitamim.file.picker.core.domain.repository.media.IMediaRepository

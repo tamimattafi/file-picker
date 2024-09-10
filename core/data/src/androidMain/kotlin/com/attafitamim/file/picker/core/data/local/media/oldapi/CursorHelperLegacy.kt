@@ -193,6 +193,6 @@ private fun skipElementIfNotValid(data: String, directoryName: String): Boolean 
     val folderName = getFolderName(data)
     val directory = data.substringAfterLast("$directoryName/")
     return !folderName.equals(directoryName, true) ||
-        directory.startsWith(DOT) ||
-        directory.contains(SEPARATOR)
+            directory.startsWith(DOT) ||
+            directory.contains(SEPARATOR)
 }

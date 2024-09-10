@@ -162,6 +162,7 @@ actual fun CameraView(
                         }
                     )
                 }
+
                 CameraState.Video.Start -> {
                     startVideo()
                     isRecordingInProcess = true
@@ -196,24 +197,25 @@ actual fun CameraView(
     }
 
     LaunchedEffect(androidCameraSelector) {
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-            runCatching {
-                if (isRecordingInProcess) {
-                    cameraProvider.unbind(preview)
-                    cameraProvider.unbind(imageCapture)
-                } else {
-                    cameraProvider.unbindAll()
+        cameraProviderFuture.addListener(
+            {
+                val cameraProvider = cameraProviderFuture.get()
+                runCatching {
+                    if (isRecordingInProcess) {
+                        cameraProvider.unbind(preview)
+                        cameraProvider.unbind(imageCapture)
+                    } else {
+                        cameraProvider.unbindAll()
+                    }
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        androidCameraSelector,
+                        preview,
+                        imageCapture,
+                        videoCapture
+                    )
                 }
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner,
-                    androidCameraSelector,
-                    preview,
-                    imageCapture,
-                    videoCapture
-                )
-            }
-        },
+            },
             ContextCompat.getMainExecutor(context)
         )
     }

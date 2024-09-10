@@ -1,20 +1,13 @@
 package com.attafitamim.file.picker.ui.utils
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.produceState
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
-import androidx.compose.ui.unit.IntSize
-import com.attafitamim.file.picker.core.utils.getThumbnail
 import com.attafitamim.file.picker.core.utils.toByteArray
 import com.attafitamim.file.picker.core.utils.toNSData
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.memScoped
 import org.jetbrains.skia.Image
 import platform.Foundation.NSURL
-import platform.Photos.PHAsset
-import platform.Photos.PHImageContentMode
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 

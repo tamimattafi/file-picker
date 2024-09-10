@@ -8,7 +8,6 @@ import com.attafitamim.file.picker.core.domain.model.media.MediaFolder
 import com.attafitamim.file.picker.core.domain.model.media.MediaLocation
 import com.attafitamim.file.picker.core.domain.model.media.MediaResource
 import com.attafitamim.file.picker.core.utils.MIME_TYPE_IMAGE_JPEG
-import com.attafitamim.file.picker.core.utils.MIME_TYPE_VIDEO_MP4
 import com.attafitamim.file.picker.core.utils.SECOND_IN_MILLIS
 import com.attafitamim.file.picker.core.utils.async
 import com.attafitamim.file.picker.core.utils.mimeType

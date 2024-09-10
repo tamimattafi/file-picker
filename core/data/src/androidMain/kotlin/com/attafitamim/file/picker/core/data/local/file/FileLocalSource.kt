@@ -88,6 +88,7 @@ class FileLocalSource(
             firstFile.isDirectory && !secondFile.isDirectory -> 1
             firstFile.isDirectory && secondFile.isDirectory ->
                 if (firstFile.lastModified() >= secondFile.lastModified()) 1 else -1
+
             secondFile.isDirectory && !firstFile.isDirectory -> -1
             else -> 0
         }
@@ -187,7 +188,7 @@ class FileLocalSource(
         }
 
     private fun String.isMounted() = this == Environment.MEDIA_MOUNTED ||
-        this == Environment.MEDIA_MOUNTED_READ_ONLY
+            this == Environment.MEDIA_MOUNTED_READ_ONLY
 
     private companion object {
 

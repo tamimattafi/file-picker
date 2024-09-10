@@ -200,7 +200,7 @@ private fun LocalCameraView(
         }
     }
 
-    var actualOrientation by remember {  mutableStateOf(AVCaptureVideoOrientationPortrait) }
+    var actualOrientation by remember { mutableStateOf(AVCaptureVideoOrientationPortrait) }
     var captureVideoStarted by remember { mutableStateOf(false) }
     val captureVideoFileOutput = remember(videoPath) { AVCaptureMovieFileOutput() }
     val captureSession: AVCaptureSession = remember {

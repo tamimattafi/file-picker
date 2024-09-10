@@ -30,8 +30,7 @@ fun MediaThumbnail(
     state: MediaState,
     contentScale: ContentScale = ContentScale.Fit,
     quality: Double = DefaultThumbnailQuality,
-    contentDescription: String? = null,
-
+    contentDescription: String? = null
 ) {
     var thumbnailSize: IntSize? by remember {
         mutableStateOf(null)

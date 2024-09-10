@@ -6,7 +6,6 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVURLAsset
 import platform.CoreFoundation.CFRelease
 import platform.CoreFoundation.CFStringRef
-import platform.CoreGraphics.CGSize
 import platform.CoreGraphics.CGSizeMake
 import platform.CoreServices.UTTypeCopyPreferredTagWithClass
 import platform.CoreServices.kUTTagClassMIMEType
@@ -29,20 +28,21 @@ import platform.UIKit.UIImage
 
 @Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS")
 @ExperimentalForeignApi
-val PHAsset.mimeType: String? get() {
-    val uType = PHAssetResource.assetResourcesForAsset(asset = this)
-        .firstNotNullOfOrNull { resource -> resource as? PHAssetResource }
-        ?.uniformTypeIdentifier as? NSString
+val PHAsset.mimeType: String?
+    get() {
+        val uType = PHAssetResource.assetResourcesForAsset(asset = this)
+            .firstNotNullOfOrNull { resource -> resource as? PHAssetResource }
+            ?.uniformTypeIdentifier as? NSString
 
-    return uType?.let { type ->
-        val cfUType = CFBridgingRetain(type) as? CFStringRef
-        val cfMimeType = UTTypeCopyPreferredTagWithClass(cfUType, kUTTagClassMIMEType)
-        val mimeType = CFBridgingRelease(cfMimeType) as String
-        CFRelease(cfUType)
-        CFRelease(cfMimeType)
-        mimeType
-    }?.takeIf(String::isNotBlank)
-}
+        return uType?.let { type ->
+            val cfUType = CFBridgingRetain(type) as? CFStringRef
+            val cfMimeType = UTTypeCopyPreferredTagWithClass(cfUType, kUTTagClassMIMEType)
+            val mimeType = CFBridgingRelease(cfMimeType) as String
+            CFRelease(cfUType)
+            CFRelease(cfMimeType)
+            mimeType
+        }?.takeIf(String::isNotBlank)
+    }
 
 suspend fun PHAsset.getPath(): String? = suspendCoroutine { continuation ->
     when (mediaType) {

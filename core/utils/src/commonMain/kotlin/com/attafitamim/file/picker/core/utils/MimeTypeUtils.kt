@@ -53,6 +53,7 @@ fun getFallbackExtensionFromMimeType(mimeType: String): String = when (mimeType)
     MIME_TYPE_TEXT_PLAIN -> EXTENSION_PLAIN_TEXT
     MIME_TYPE_AUDIO_XWAV,
     MIME_TYPE_AUDIO_VND_WAVE -> EXTENSION_WAV
+
     MIME_TYPE_AUDIO_MP3 -> EXTENSION_MP3
     else -> mimeType.substringAfterLast(MIME_TYPE_SEPARATOR)
 }
