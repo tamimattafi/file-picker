@@ -29,20 +29,18 @@ import platform.UIKit.UIImage
 @Suppress("UNCHECKED_CAST", "CAST_NEVER_SUCCEEDS")
 @ExperimentalForeignApi
 val PHAsset.mimeType: String?
-    get() {
+    get() = runCatching {
         val uType = PHAssetResource.assetResourcesForAsset(asset = this)
             .firstNotNullOfOrNull { resource -> resource as? PHAssetResource }
             ?.uniformTypeIdentifier as? NSString
 
-        return uType?.let { type ->
+        uType?.let { type ->
             val cfUType = CFBridgingRetain(type) as? CFStringRef
             val cfMimeType = UTTypeCopyPreferredTagWithClass(cfUType, kUTTagClassMIMEType)
-            val mimeType = CFBridgingRelease(cfMimeType) as String
             CFRelease(cfUType)
-            CFRelease(cfMimeType)
-            mimeType
+            CFBridgingRelease(cfMimeType) as String
         }?.takeIf(String::isNotBlank)
-    }
+    }.getOrNull()
 
 suspend fun PHAsset.getPath(): String? = suspendCoroutine { continuation ->
     when (mediaType) {
