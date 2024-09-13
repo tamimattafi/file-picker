@@ -27,7 +27,7 @@ class PublishConventions : Plugin<Project> {
                 com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL,
                 automaticRelease = true
             )
-            //signAllPublications()
+            signAllPublications()
         }
     }
 }
