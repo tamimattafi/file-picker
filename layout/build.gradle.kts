@@ -2,6 +2,7 @@ plugins {
     id(libs.plugins.convention.multiplatform.get().pluginId)
     id(libs.plugins.convention.publish.get().pluginId)
     alias(libs.plugins.compose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
