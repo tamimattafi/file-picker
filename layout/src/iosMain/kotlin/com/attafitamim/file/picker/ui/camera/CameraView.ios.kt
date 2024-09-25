@@ -237,6 +237,7 @@ private fun LocalCameraView(
             if (error != null) {
                 onError?.invoke()
             }
+            onVideoCaptureStop?.invoke()
         }
     }
     val frameQueue = remember {
@@ -359,7 +360,6 @@ private fun LocalCameraView(
             CameraState.Video.Stop -> {
                 captureVideoStarted = false
                 captureVideoFileOutput.stopRecording()
-                onVideoCaptureStop?.invoke()
             }
 
             else -> {}
