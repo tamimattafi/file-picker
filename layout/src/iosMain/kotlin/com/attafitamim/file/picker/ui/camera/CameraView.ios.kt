@@ -62,6 +62,7 @@ import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVVideoCodecKey
 import platform.AVFoundation.AVVideoCodecTypeJPEG
+import platform.AVFoundation.CGImageRepresentation
 import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.defaultDeviceWithDeviceType
 import platform.AVFoundation.deviceType
@@ -91,6 +92,7 @@ import platform.UIKit.UIDeviceOrientation
 import platform.UIKit.UIDeviceOrientationDidChangeNotification
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
+import platform.UIKit.UIImageOrientation.UIImageOrientationRight
 import platform.UIKit.UIImagePNGRepresentation
 import platform.UIKit.UIImagePickerController
 import platform.UIKit.UIImagePickerControllerCameraDevice
@@ -248,9 +250,9 @@ private fun LocalCameraView(
                 didFinishProcessingPhoto: AVCapturePhoto,
                 error: NSError?
             ) {
-                val photoData = didFinishProcessingPhoto.fileDataRepresentation()
+                val photoData = didFinishProcessingPhoto.CGImageRepresentation()
                 if (photoData != null) {
-                    val image = UIImage(photoData)
+                    val image = UIImage(photoData, COMPRESSION_QUALITY, UIImageOrientationRight)
                     UIImageJPEGRepresentation(image, COMPRESSION_QUALITY)?.let { jpg ->
                         val byteArray = ByteArray(jpg.length.toInt()).apply {
                             usePinned { pinned ->
