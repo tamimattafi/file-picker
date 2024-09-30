@@ -24,6 +24,18 @@ fun String.pathToImageBitmap(context: Context, quality: Double = IMAGE_MAX_QUALI
         BitmapFactory.decodeStream(inputStream)?.compress(quality)?.asImageBitmap()
     }
 
+fun Bitmap.compress(
+    width: Int,
+    height: Int,
+    quality: Double
+): Bitmap {
+    if (this.width <= width && this.height <= height) {
+        return this
+    }
+
+    return compress(quality)
+}
+
 fun Bitmap.compress(quality: Double): Bitmap {
     if (quality == IMAGE_MAX_QUALITY) {
         return this
