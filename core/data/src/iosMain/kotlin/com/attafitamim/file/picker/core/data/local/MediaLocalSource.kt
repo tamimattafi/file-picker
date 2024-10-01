@@ -25,9 +25,9 @@ import platform.Foundation.NSSortDescriptor
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import platform.Foundation.URLByDeletingLastPathComponent
 import platform.Foundation.create
 import platform.Foundation.stringByAppendingPathComponent
+import platform.Foundation.stringByDeletingLastPathComponent
 import platform.Foundation.timeIntervalSince1970
 import platform.Foundation.writeToFile
 import platform.Photos.PHAsset
@@ -240,7 +240,7 @@ private fun saveUIImageAndGetPathWithFormat(
 
 @OptIn(ExperimentalForeignApi::class)
 private fun saveImageToCustomPath(data: NSData, filePath: String): String {
-    val directoryUrl = NSURL.fileURLWithPath(filePath).URLByDeletingLastPathComponent
+    val directoryUrl = NSURL.fileURLWithPath(filePath).getParent()
     if (!NSFileManager.defaultManager.fileExistsAtPath(directoryUrl?.path.orEmpty()) &&
         directoryUrl != null
     ) {
@@ -278,7 +278,7 @@ private fun insertVideoToAlbum(path: String): String {
     val videoPath = createMediaPathWithFormat(isPhoto = false)
     val data = NSData.create(NSURL.fileURLWithPath(path, true))
     val fileUrl = NSURL.fileURLWithPath(videoPath)
-    val directoryUrl = fileUrl.URLByDeletingLastPathComponent
+    val directoryUrl = fileUrl.getParent()
     if (!NSFileManager.defaultManager.fileExistsAtPath(directoryUrl?.path.orEmpty()) &&
         directoryUrl != null
     ) {
@@ -311,3 +311,14 @@ private fun createMediaPathWithFormat(isPhoto: Boolean, mimeType: String? = null
 }
 
 private fun randomDirectoryId() = Random.nextULong().toString()
+
+private fun NSURL.getParent(): NSURL? = kotlin.runCatching {
+    URLByDeletingLastPathComponent
+}.getOrNull() ?: getParentFromPath()
+
+@Suppress("CAST_NEVER_SUCCEEDS")
+private fun NSURL.getParentFromPath(): NSURL? = kotlin.runCatching {
+    val filePath = absoluteString?.takeIf(String::isNotBlank) as? NSString ?: return null
+    val parentPath = filePath.stringByDeletingLastPathComponent
+    NSURL.fileURLWithPath(parentPath)
+}.getOrNull()
