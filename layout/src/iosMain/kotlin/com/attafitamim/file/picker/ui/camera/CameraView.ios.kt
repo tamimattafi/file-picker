@@ -9,6 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
+import androidx.compose.ui.viewinterop.UIKitInteropProperties
+import androidx.compose.ui.viewinterop.UIKitView
 import com.attafitamim.file.picker.core.utils.throttleFirst
 import com.attafitamim.file.picker.core.utils.toByteArray
 import kotlinx.cinterop.BetaInteropApi
@@ -17,6 +19,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.convert
+import kotlinx.cinterop.readValue
 import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -73,6 +76,7 @@ import platform.AVFoundation.position
 import platform.AVFoundation.setFlashMode
 import platform.AVFoundation.setTorchMode
 import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectZero
 import platform.CoreImage.CIImage
 import platform.CoreMedia.CMSampleBufferGetImageBuffer
 import platform.CoreMedia.CMSampleBufferRef
@@ -467,25 +471,25 @@ private fun LocalCameraView(
     }
 
     UIKitView(
-        modifier = modifier,
         factory = {
-            val cameraContainer = UIView().apply {
-                setBackgroundColor(UIColor.blackColor)
-            }
-
-            cameraContainer.layer.addSublayer(cameraPreviewLayer)
             cameraPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            val cameraContainer = object : UIView(frame = CGRectZero.readValue()) {
+                override fun layoutSubviews() {
+                    super.layoutSubviews()
+                    cameraPreviewLayer.frame = this.bounds
+                }
+            }.apply { setBackgroundColor(UIColor.blackColor) }
             captureFrameOutput.connectionWithMediaType(AVMediaTypeVideo)
                 ?.videoOrientation = actualOrientation
+            cameraContainer.layer.addSublayer(cameraPreviewLayer)
+            cameraPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
             cameraContainer
         },
-        onResize = { view: UIView, rect: CValue<CGRect> ->
-            CATransaction.begin()
-            CATransaction.setValue(true, kCATransactionDisableActions)
-            view.layer.setFrame(rect)
-            cameraPreviewLayer.setFrame(rect)
-            CATransaction.commit()
-        }
+        modifier = modifier,
+        properties = UIKitInteropProperties(
+            isInteractive = true,
+            isNativeAccessibilityEnabled = true
+        )
     )
 }
 
